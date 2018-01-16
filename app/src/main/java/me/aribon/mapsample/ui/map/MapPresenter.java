@@ -57,10 +57,10 @@ public class MapPresenter extends BasePresenter implements MapContract.Presenter
     private void moveMapTo(Location location) {
         if(location != null) {
             mvpView.moveTo(CameraUpdateFactory
-                    .newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
+                    .newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), MapConstant.DEFAULT_ZOOM));
         } else {
             mvpView.moveTo(CameraUpdateFactory
-                    .newLatLng(new LatLng(MapConstant.NOTRE_DAME_PARIS_LAT, MapConstant.NOTRE_DAME_PARIS_LON)));
+                    .newLatLngZoom(new LatLng(MapConstant.NOTRE_DAME_PARIS_LAT, MapConstant.NOTRE_DAME_PARIS_LON), MapConstant.DEFAULT_ZOOM));
         }
     }
 }

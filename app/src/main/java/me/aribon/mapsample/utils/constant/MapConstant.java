@@ -9,4 +9,6 @@ public class MapConstant {
     
     public static double NOTRE_DAME_PARIS_LAT = 48.853;
     public static double NOTRE_DAME_PARIS_LON = 2.35;
+
+    public static int DEFAULT_ZOOM = 15;
 }

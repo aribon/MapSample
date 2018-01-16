@@ -4,7 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
@@ -38,9 +38,18 @@ public class MapFragment extends BaseFragment implements MapContract.View {
     private MapView mapView;
     private MapboxMap mapboxMap;
 
+    private FloatingActionButton btnMyLocation;
+
+    @Override
+    public int getLayoutResource() {
+        return R.layout.fragment_mapbox;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //Start initialization of map
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -50,6 +59,38 @@ public class MapFragment extends BaseFragment implements MapContract.View {
                     presenter.centerMap();
             }
         });
+    }
+
+    @Override
+    public void findView(View view) {
+        super.findView(view);
+        mapView = view.findViewById(R.id.mapView);
+        btnMyLocation = view.findViewById(R.id.map_my_location_button);
+    }
+
+    @Override
+    public void initializePresenter() {
+        super.initializePresenter();
+        //Initialization of the presenter
+        presenter = new MapPresenter(getParentActivity(), this);
+    }
+
+    @Override
+    public void initializeView() {
+        super.initializeView();
+
+        //Initialize fab button click
+        btnMyLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.centerMap();
+            }
+        });
+    }
+
+    @Override
+    public void moveTo(CameraUpdate cameraUpdate) {
+        mapboxMap.animateCamera(cameraUpdate);
     }
 
     @Override
@@ -93,28 +134,6 @@ public class MapFragment extends BaseFragment implements MapContract.View {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public int getLayoutResource() {
-        return R.layout.fragment_mapbox;
-    }
-
-    @Override
-    public void findView(View view) {
-        super.findView(view);
-        mapView = (MapView) view.findViewById(R.id.mapView);
-    }
-
-    @Override
-    public void initializePresenter() {
-        super.initializePresenter();
-        presenter = new MapPresenter(getParentActivity(), this);
-    }
-
-    @Override
-    public void moveTo(CameraUpdate cameraUpdate) {
-        mapboxMap.moveCamera(cameraUpdate);
     }
 
     @Override
