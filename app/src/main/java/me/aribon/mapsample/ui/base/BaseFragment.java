@@ -22,7 +22,7 @@ import me.aribon.mapsample.utils.ResUtils;
 
 public abstract class BaseFragment extends Fragment {
 
-    BaseActivity activity;
+    private BaseActivity activity;
 
     @Override
     public void onAttach(Context context) {

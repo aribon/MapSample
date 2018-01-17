@@ -24,6 +24,6 @@ public class AppApplication extends Application {
         super.onCreate();
         instance = this;
 
-        Mapbox.getInstance(getApplicationContext(), ResUtils.getString(R.string.mapbox_key));
+        Mapbox.getInstance(getApplicationContext(), ResUtils.getString(R.string.mapbox_token));
     }
 }
