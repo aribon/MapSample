@@ -1,5 +1,6 @@
 package me.aribon.mapsample.ui.map;
 
+import android.location.Address;
 import android.location.Location;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -76,6 +77,12 @@ public class MapPresenter extends BasePresenter implements MapContract.Presenter
   public void centerMap() {
     findCurrentPosition();
   }
+  
+  @Override
+  public void mapMoved(double lat, double lng) {
+      sendPosition(lat, lng);
+
+  }
 
   private void findCurrentPosition() {
     new LocationManager()
@@ -107,4 +114,8 @@ public class MapPresenter extends BasePresenter implements MapContract.Presenter
           MapConstant.DEFAULT_ZOOM);
     }
   }
+
+    private void sendPosition(double lat, double lng) {
+        LocationBus.getInstance().send(LocationUtils.transposeToLatLng(lat, lng));
+    }
 }
