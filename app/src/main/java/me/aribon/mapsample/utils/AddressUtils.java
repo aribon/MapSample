@@ -3,6 +3,8 @@ package me.aribon.mapsample.utils;
 import android.location.Address;
 import android.support.annotation.NonNull;
 
+import me.aribon.mapsample.utils.suggestion.AddressSuggestion;
+
 /**
  * Created by anthony.ribon
  * On 18/01/2018
@@ -20,15 +22,43 @@ public class AddressUtils {
   }
 
   public static String formatAddress(@NonNull Address address) {
-    StringBuilder strAddress = new StringBuilder();
+    return formatAddress(
+            address.getSubThoroughfare(),
+            address.getThoroughfare(),
+            address.getPostalCode(),
+            address.getLocality()
+    );
+  }
 
-    strAddress.append(address.getSubThoroughfare()).append(" "); //The street number
-    strAddress.append(address.getThoroughfare()).append(" "); //todo The street name
-    strAddress.append(address.getPostalCode()).append(" "); //The postal code
-    strAddress.append(address.getLocality()).append(" "); //The city name
+  public static String formatAddress(String number, String street, String postalCode, String city) {
+    return number + ", " +
+            street + " " +
+            postalCode + " " +
+            city + " ";
 
+  }
 
-    return strAddress.toString();
+  public static String formatAddressSuggestion(AddressSuggestion addressSuggestion) {
+    String streetLine = (addressSuggestion.getNumber() != null
+            && addressSuggestion.getStreet() != null
+            ? addressSuggestion.getNumber() + ", "
+            : "")
+            + (addressSuggestion.getStreet() != null
+            ? addressSuggestion.getStreet()
+            : "");
+
+    String cityLine = (addressSuggestion.getPostalCode() != null
+            ? addressSuggestion.getPostalCode() + " "
+            : "")
+            + (addressSuggestion.getCity() != null
+            ? addressSuggestion.getCity()
+            : "");
+
+    return "<font color=\"#212121\">" + streetLine + "</font>"
+            + (!cityLine.isEmpty() && !streetLine.isEmpty()
+            ? "<br />"
+            : "")
+            + "<font color=\"#616161\"> <small>" +cityLine + "</small> </font>";
   }
 
 }

@@ -1,5 +1,7 @@
 package me.aribon.mapsample.ui.address;
 
+import java.util.List;
+
 import me.aribon.mapsample.ui.base.BaseMvpPresenter;
 import me.aribon.mapsample.ui.base.BaseMvpView;
 
@@ -10,11 +12,23 @@ import me.aribon.mapsample.ui.base.BaseMvpView;
 
 public interface SearchAddressContract {
 
-    interface View extends BaseMvpView {
+    interface View<S> extends BaseMvpView {
 
+        void showSuggestions(List<S> searchSuggestions);
+
+        void showAddress(String address);
+
+        void hideSuggestions();
+
+        void showProgress();
+
+        void hideProgress();
     }
 
     interface Presenter extends BaseMvpPresenter {
 
+        void searchSuggestions(String query);
+
+        void selectAddress(String address);
     }
 }

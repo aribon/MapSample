@@ -44,6 +44,8 @@ dependencies {
     //MapBox
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:5.3.1'
 
+    implementation 'com.github.arimorty:floatingsearchview:2.1.1'
+
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
 

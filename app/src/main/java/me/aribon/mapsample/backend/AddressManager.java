@@ -2,9 +2,9 @@ package me.aribon.mapsample.backend;
 
 import android.location.Address;
 import android.location.Geocoder;
-import android.support.annotation.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,7 +21,6 @@ import me.aribon.mapsample.AppApplication;
 
 public class AddressManager {
 
-    @Nullable
     public Observable<Address> fetchAddressFromLocation(double lat, double lng) {
         return Observable.create(
                 new ObservableOnSubscribe<Address>() {
@@ -48,5 +47,40 @@ public class AddressManager {
                     }
                 }
         ).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<List<Address>> fetchAddressesFromName(String name, int nbrResults) {
+        return Observable.create(
+                new ObservableOnSubscribe<List<Address>>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<List<Address>> emitter) throws Exception {
+                        List<Address> addresses = new ArrayList<>();
+
+                        Geocoder geocoder = new Geocoder(AppApplication.getInstance().getApplicationContext(),
+                                Locale.FRANCE);
+
+                        try {
+                            addresses = geocoder.getFromLocationName(restrictToFrance(name), nbrResults);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        emitter.onNext(addresses);
+                        emitter.onComplete();
+                    }
+                }
+        ).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<Address> fetchAddressFromName(String name) {
+       return fetchAddressesFromName(name, 1)
+               .map(addresses -> addresses != null && addresses.size() > 0
+                       ? addresses.get(0)
+                       : null);
+    }
+
+    public String restrictToFrance(String query) {
+        String suffix = ", France";
+        return query.toUpperCase().endsWith(suffix) ? query : query + suffix;
     }
 }

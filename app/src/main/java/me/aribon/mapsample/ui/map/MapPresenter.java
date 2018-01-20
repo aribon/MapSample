@@ -6,7 +6,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import me.aribon.mapsample.backend.LocationManager;
 import me.aribon.mapsample.ui.base.BasePresenter;
-import me.aribon.mapsample.utils.LocationUtils;
 import me.aribon.mapsample.utils.MapBoxUtils;
 import me.aribon.mapsample.utils.constant.MapConstant;
 
@@ -44,16 +43,11 @@ public class MapPresenter extends BasePresenter implements MapContract.Presenter
     }
 
     private void findCurrentPosition() {
-        LocationManager
-            .getInstance()
+         new LocationManager()
             .fetchCurrentPosition(
                     new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
-                            LocationManager
-                                .getInstance()
-                                .send(LocationUtils.transposeToLatLng(location));
-
                             moveMapTo(location);
                         }
                     }
