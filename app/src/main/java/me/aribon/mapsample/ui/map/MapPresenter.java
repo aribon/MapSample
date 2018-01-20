@@ -1,5 +1,6 @@
 package me.aribon.mapsample.ui.map;
 
+import android.location.Address;
 import android.location.Location;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -120,5 +121,9 @@ public class MapPresenter extends BasePresenter implements MapContract.Presenter
             .send(new LocationEvent(
                 LocationUtils.transposeToLatLng(lat, lng),
                 LocationEvent.LocationEventType.FROM_MAP));
+    }
+
+    private void sendPosition(double lat, double lng) {
+        LocationBus.getInstance().send(LocationUtils.transposeToLatLng(lat, lng));
     }
 }
