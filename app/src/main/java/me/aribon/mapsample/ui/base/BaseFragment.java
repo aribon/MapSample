@@ -1,15 +1,18 @@
 package me.aribon.mapsample.ui.base;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import me.aribon.mapsample.R;
 import me.aribon.mapsample.utils.ResUtils;
 
 /**
@@ -85,11 +88,22 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showMessage(String message) {
-
+        new AlertDialog.Builder(activity)
+                .setMessage(message)
+                .setPositiveButton(
+                        ResUtils.getString(R.string.generic_ok),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                .create()
+                .show();
     }
 
     public void showMessage(@StringRes int resId) {
-
+        showMessage(ResUtils.getString(resId));
     }
 
     public void showToastMessage(String message) {
@@ -97,7 +111,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showToastMessage(@StringRes int resId) {
-        Toast.makeText(activity, ResUtils.getString(resId), Toast.LENGTH_LONG).show();
+        showToastMessage(ResUtils.getString(resId));
     }
 
     public void showKeyboard() {
