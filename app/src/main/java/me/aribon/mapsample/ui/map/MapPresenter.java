@@ -1,6 +1,5 @@
 package me.aribon.mapsample.ui.map;
 
-import android.location.Address;
 import android.location.Location;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -9,11 +8,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import me.aribon.mapsample.backend.LocationManager;
+import me.aribon.mapsample.business.bus.LocationBus;
 import me.aribon.mapsample.business.bus.AddressBus;
 import me.aribon.mapsample.business.event.AddressEvent;
+import me.aribon.mapsample.business.event.LocationEvent;
 import me.aribon.mapsample.ui.base.BasePresenter;
 import me.aribon.mapsample.utils.LocationUtils;
-import me.aribon.mapsample.utils.MapBoxUtils;
 import me.aribon.mapsample.utils.constant.MapConstant;
 
 /**
@@ -116,6 +116,9 @@ public class MapPresenter extends BasePresenter implements MapContract.Presenter
   }
 
     private void sendPosition(double lat, double lng) {
-        LocationBus.getInstance().send(LocationUtils.transposeToLatLng(lat, lng));
+        LocationBus.getInstance()
+            .send(new LocationEvent(
+                LocationUtils.transposeToLatLng(lat, lng),
+                LocationEvent.LocationEventType.FROM_MAP));
     }
 }

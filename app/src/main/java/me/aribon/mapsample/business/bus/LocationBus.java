@@ -1,11 +1,11 @@
-package me.aribon.mapsample.business;
+package me.aribon.mapsample.business.bus;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.jakewharton.rxrelay2.PublishRelay;
 import com.jakewharton.rxrelay2.Relay;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
+import me.aribon.mapsample.business.event.LocationEvent;
 
 /**
  * @Author: aribon
@@ -37,19 +37,13 @@ public class LocationBus {
 
     private final Relay<Object> busSubject = PublishRelay.create().toSerialized();
 
-    public Observable<LatLng> register(Class<LatLng> eventClass) {
+    public Observable<LocationEvent> register() {
         return busSubject
-                .filter(event -> event.getClass().equals(eventClass))
-                .map(object -> (LatLng) object);
-    }
-
-    public Observable<LatLng> register() {
-        return busSubject
-                .map(object -> (LatLng) object)
+                .map(object -> (LocationEvent) object)
                 .subscribeOn(Schedulers.io());
     }
 
-    public void send(LatLng event) {
+    public void send(LocationEvent event) {
         busSubject.accept(event);
     }
 }

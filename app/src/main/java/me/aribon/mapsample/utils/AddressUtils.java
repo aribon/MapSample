@@ -59,11 +59,10 @@ public class AddressUtils {
   }
 
   public static String formatAddress(String number, String street, String postalCode, String city) {
-    return number + ", " +
-        street + " " +
-        postalCode + " " +
-        city + " ";
-
+    return (number != null && street != null ? number + ", " : "")
+        + (street != null ? street + " " : "")
+        + (postalCode != null ? postalCode + " " : "")
+        + (city != null ? city : "");
   }
 
   public static String formatAddressSuggestion(AddressSuggestion addressSuggestion) {
@@ -88,5 +87,4 @@ public class AddressUtils {
         : "")
         + "<font color=\"#616161\"> <small>" + cityLine + "</small> </font>";
   }
-
 }

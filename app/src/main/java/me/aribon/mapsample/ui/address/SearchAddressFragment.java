@@ -46,6 +46,12 @@ public class SearchAddressFragment extends BaseFragment
   }
 
   @Override
+  public void initializeData() {
+    super.initializeData();
+    presenter.subscribe();
+  }
+
+  @Override
   public void initializeView() {
     super.initializeView();
     searchAddressBar.setOnQueryChangeListener(
@@ -109,5 +115,11 @@ public class SearchAddressFragment extends BaseFragment
   @Override
   public void hideProgress() {
     searchAddressBar.hideProgress();
+  }
+
+  @Override
+  public void onDestroy() {
+    presenter.unsubscribe();
+    super.onDestroy();
   }
 }
