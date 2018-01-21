@@ -12,23 +12,23 @@ import me.aribon.mapsample.ui.base.BaseMvpView;
 
 public interface SearchAddressContract {
 
-    interface View<S> extends BaseMvpView {
+  interface View<S> extends BaseMvpView {
 
-        void showSuggestions(List<S> searchSuggestions);
+    void showSuggestions(List<S> searchSuggestions);
 
-        void showAddress(String address);
+    void showAddress(String address);
 
-        void hideSuggestions();
+    void hideSuggestions();
 
-        void showProgress();
+    void showProgress();
 
-        void hideProgress();
-    }
+    void hideProgress();
+  }
 
-    interface Presenter extends BaseMvpPresenter {
+  interface Presenter extends BaseMvpPresenter {
 
-        void searchSuggestions(String query);
+    void searchSuggestions(String query);
 
-        void selectAddress(String address);
-    }
+    void selectAddress(String address);
+  }
 }

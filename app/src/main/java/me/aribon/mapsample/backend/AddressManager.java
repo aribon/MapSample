@@ -21,66 +21,58 @@ import me.aribon.mapsample.AppApplication;
 
 public class AddressManager {
 
-    public Observable<Address> fetchAddressFromLocation(double lat, double lng) {
-        return Observable.create(
-                new ObservableOnSubscribe<Address>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<Address> emitter) throws Exception {
-                        Address address = null;
+  /**
+   * Search address list corresponding to query
+   *
+   * @param name the address to find
+   * @param nbrResults the number of result wanted
+   * @return list of address
+   */
+  public Observable<List<Address>> fetchAddressesFromName(String name, int nbrResults) {
+    return Observable.create(
+        new ObservableOnSubscribe<List<Address>>() {
+          @Override
+          public void subscribe(ObservableEmitter<List<Address>> emitter) throws Exception {
+            List<Address> addresses = new ArrayList<>();
 
-                        Geocoder geocoder = new Geocoder(AppApplication.getInstance().getApplicationContext(),
-                                Locale.FRANCE);
+            Geocoder geocoder = new Geocoder(AppApplication.getInstance().getApplicationContext(),
+                Locale.FRANCE);
 
-                        try {
-                            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            try {
+              addresses = geocoder.getFromLocationName(restrictToFrance(name), nbrResults);
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
 
-                            if (addresses.size() > 0) {
-                                address = addresses.get(0);
-                            }
+            emitter.onNext(addresses);
+            emitter.onComplete();
+          }
+        }
+    ).subscribeOn(Schedulers.io());
+  }
 
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+  /**
+   * Search an address corresponding to query
+   *
+   * @param name the address to find
+   * @return first result of the search
+   */
+  public Observable<Address> fetchAddressFromName(String name) {
+    return fetchAddressesFromName(name, 1)
+        .map(addresses -> addresses != null && addresses.size() > 0
+            ? addresses.get(0)
+            : null);
+  }
 
-                        emitter.onNext(address);
-                        emitter.onComplete();
-                    }
-                }
-        ).subscribeOn(Schedulers.io());
-    }
-
-    public Observable<List<Address>> fetchAddressesFromName(String name, int nbrResults) {
-        return Observable.create(
-                new ObservableOnSubscribe<List<Address>>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<List<Address>> emitter) throws Exception {
-                        List<Address> addresses = new ArrayList<>();
-
-                        Geocoder geocoder = new Geocoder(AppApplication.getInstance().getApplicationContext(),
-                                Locale.FRANCE);
-
-                        try {
-                            addresses = geocoder.getFromLocationName(restrictToFrance(name), nbrResults);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        emitter.onNext(addresses);
-                        emitter.onComplete();
-                    }
-                }
-        ).subscribeOn(Schedulers.io());
-    }
-
-    public Observable<Address> fetchAddressFromName(String name) {
-       return fetchAddressesFromName(name, 1)
-               .map(addresses -> addresses != null && addresses.size() > 0
-                       ? addresses.get(0)
-                       : null);
-    }
-
-    public String restrictToFrance(String query) {
-        String suffix = ", France";
-        return query.toUpperCase().endsWith(suffix) ? query : query + suffix;
-    }
+  /**
+   * [If use Geocoder object]
+   * Filter and restrict the request only in france
+   *
+   * @param query the query to restrict
+   * @return the new query with filter parameters
+   */
+  public String restrictToFrance(String query) {
+    String suffix = ", France";
+    return query.toUpperCase().endsWith(suffix) ? query : query + suffix;
+  }
 }

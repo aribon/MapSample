@@ -22,92 +22,92 @@ import me.aribon.mapsample.utils.suggestion.AddressSuggestion;
  */
 
 public class SearchAddressFragment extends BaseFragment
-        implements SearchAddressContract.View<AddressSuggestion> {
+    implements SearchAddressContract.View<AddressSuggestion> {
 
-    private SearchAddressContract.Presenter presenter;
+  private SearchAddressContract.Presenter presenter;
 
-    FloatingSearchView searchAddressBar;
+  FloatingSearchView searchAddressBar;
 
-    @Override
-    public int getLayoutResource() {
-        return R.layout.fragment_search_address;
-    }
+  @Override
+  public int getLayoutResource() {
+    return R.layout.fragment_search_address;
+  }
 
-    @Override
-    public void initializePresenter() {
-        super.initializePresenter();
-        presenter = new SearchAddressPresenter(this);
-    }
+  @Override
+  public void initializePresenter() {
+    super.initializePresenter();
+    presenter = new SearchAddressPresenter(this);
+  }
 
-    @Override
-    public void findView(View view) {
-        super.findView(view);
-        searchAddressBar = view.findViewById(R.id.search_address_bar);
-    }
+  @Override
+  public void findView(View view) {
+    super.findView(view);
+    searchAddressBar = view.findViewById(R.id.search_address_bar);
+  }
 
-    @Override
-    public void initializeView() {
-        super.initializeView();
-        searchAddressBar.setOnQueryChangeListener(
-                new FloatingSearchView.OnQueryChangeListener() {
-                    @Override
-                    public void onSearchTextChanged(String oldQuery, final String newQuery) {
-                        if (!oldQuery.isEmpty() && newQuery.isEmpty()) {
-                            searchAddressBar.clearSuggestions();
-                        } else {
-                            presenter.searchSuggestions(newQuery);
-                        }
-                    }
-                }
-        );
+  @Override
+  public void initializeView() {
+    super.initializeView();
+    searchAddressBar.setOnQueryChangeListener(
+        new FloatingSearchView.OnQueryChangeListener() {
+          @Override
+          public void onSearchTextChanged(String oldQuery, final String newQuery) {
+            if (!oldQuery.isEmpty() && newQuery.isEmpty()) {
+              searchAddressBar.clearSuggestions();
+            } else {
+              presenter.searchSuggestions(newQuery);
+            }
+          }
+        }
+    );
 
-        searchAddressBar.setOnBindSuggestionCallback(
-                new SearchSuggestionsAdapter.OnBindSuggestionCallback() {
-                    @Override
-                    public void onBindSuggestion(View suggestionView, ImageView leftIcon, TextView textView, SearchSuggestion item, int itemPosition) {
-                        textView.setText(Html.fromHtml(AddressUtils
-                                .formatAddressSuggestion((AddressSuggestion) item)));
-                    }
-                }
-        );
+    searchAddressBar.setOnBindSuggestionCallback(
+        new SearchSuggestionsAdapter.OnBindSuggestionCallback() {
+          @Override
+          public void onBindSuggestion(View suggestionView, ImageView leftIcon, TextView textView, SearchSuggestion item, int itemPosition) {
+            textView.setText(Html.fromHtml(AddressUtils
+                .formatAddressSuggestion((AddressSuggestion) item)));
+          }
+        }
+    );
 
-        searchAddressBar.setOnSearchListener(
-                new FloatingSearchView.OnSearchListener() {
-                    @Override
-                    public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
-                        presenter.selectAddress(searchSuggestion.getBody());
-                    }
+    searchAddressBar.setOnSearchListener(
+        new FloatingSearchView.OnSearchListener() {
+          @Override
+          public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+            presenter.selectAddress(((AddressSuggestion) searchSuggestion).getUuid());
+          }
 
-                    @Override
-                    public void onSearchAction(String currentQuery) {
+          @Override
+          public void onSearchAction(String currentQuery) {
 
-                    }
-                }
-        );
-    }
+          }
+        }
+    );
+  }
 
-    @Override
-    public void showSuggestions(List<AddressSuggestion> searchSuggestions) {
-        searchAddressBar.swapSuggestions(searchSuggestions);
-    }
+  @Override
+  public void showSuggestions(List<AddressSuggestion> searchSuggestions) {
+    searchAddressBar.swapSuggestions(searchSuggestions);
+  }
 
-    @Override
-    public void showAddress(String address) {
-        searchAddressBar.setSearchBarTitle(address);
-    }
+  @Override
+  public void showAddress(String address) {
+    searchAddressBar.setSearchBarTitle(address);
+  }
 
-    @Override
-    public void hideSuggestions() {
-        searchAddressBar.clearSearchFocus();
-    }
+  @Override
+  public void hideSuggestions() {
+    searchAddressBar.clearSearchFocus();
+  }
 
-    @Override
-    public void showProgress() {
-        searchAddressBar.showProgress();
-    }
+  @Override
+  public void showProgress() {
+    searchAddressBar.showProgress();
+  }
 
-    @Override
-    public void hideProgress() {
-        searchAddressBar.hideProgress();
-    }
+  @Override
+  public void hideProgress() {
+    searchAddressBar.hideProgress();
+  }
 }

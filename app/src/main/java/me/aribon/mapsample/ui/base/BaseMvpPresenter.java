@@ -7,7 +7,7 @@ package me.aribon.mapsample.ui.base;
 
 public interface BaseMvpPresenter {
 
-    void subscribe();
+  void subscribe();
 
-    void unsubscribe();
+  void unsubscribe();
 }

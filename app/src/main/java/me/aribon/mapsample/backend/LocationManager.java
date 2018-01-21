@@ -30,58 +30,76 @@ import me.aribon.mapsample.AppApplication;
 
 public class LocationManager {
 
-    private FusedLocationProviderClient mFusedLocationClient;
+  private FusedLocationProviderClient mFusedLocationClient;
 
-    public void fetchCurrentPosition(OnSuccessListener<Location> successListener) {
-        if (mFusedLocationClient == null) {
-            mFusedLocationClient = LocationServices
-                .getFusedLocationProviderClient(AppApplication.getInstance().getApplicationContext());
-        }
-
-        if (ActivityCompat.checkSelfPermission(AppApplication.getInstance().getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(AppApplication.getInstance().getApplicationContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(successListener);
+  /**
+   *  Find the current position of the user
+   *
+   * @param successListener the success callback
+   */
+  public void fetchCurrentPosition(OnSuccessListener<Location> successListener) {
+    if (mFusedLocationClient == null) {
+      mFusedLocationClient = LocationServices
+          .getFusedLocationProviderClient(AppApplication.getInstance().getApplicationContext());
     }
 
-    @Nullable
-    public Observable<Address> fetchAddressFromLocation(LatLng latLng) {
-        return fetchAddressFromLocation(latLng.latitude, latLng.longitude);
+    if (ActivityCompat.checkSelfPermission(AppApplication.getInstance().getApplicationContext(),
+        Manifest.permission.ACCESS_FINE_LOCATION)
+        != PackageManager.PERMISSION_GRANTED
+        && ActivityCompat.checkSelfPermission(AppApplication.getInstance().getApplicationContext(),
+        Manifest.permission.ACCESS_COARSE_LOCATION)
+        != PackageManager.PERMISSION_GRANTED) {
+      return;
     }
 
-    @Nullable
-    public Observable<Address> fetchAddressFromLocation(double latitude, double longitude) {
-        return Observable.create(
-            new ObservableOnSubscribe<Address>() {
-                @Override
-                public void subscribe(ObservableEmitter<Address> emitter) throws Exception {
-                    Address address = null;
+    mFusedLocationClient.getLastLocation()
+        .addOnSuccessListener(successListener);
+  }
 
-                    Geocoder geocoder = new Geocoder(AppApplication.getInstance().getApplicationContext(),
-                        Locale.ENGLISH);
+  /**
+   * Search a specific address from his coordinate
+   *
+   * @param latLng the coordinate of the address
+   * @return the address found
+   */
+  @Nullable
+  public Observable<Address> fetchAddressFromLocation(LatLng latLng) {
+    return fetchAddressFromLocation(latLng.latitude, latLng.longitude);
+  }
 
-                    try {
-                        List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+  /**
+   * Search a specific address from his coordinate
+   *
+   * @param latitude the latitude of the address
+   * @param longitude the longitude of the address
+   * @return the address found
+   */
+  @Nullable
+  public Observable<Address> fetchAddressFromLocation(double latitude, double longitude) {
+    return Observable.create(
+        new ObservableOnSubscribe<Address>() {
+          @Override
+          public void subscribe(ObservableEmitter<Address> emitter) throws Exception {
+            Address address = null;
 
-                        if (addresses.size() > 0) {
-                            address = addresses.get(0);
-                        }
+            Geocoder geocoder = new Geocoder(AppApplication.getInstance().getApplicationContext(),
+                Locale.ENGLISH);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            try {
+              List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
 
-                    emitter.onNext(address);
-                    emitter.onComplete();
-                }
+              if (addresses.size() > 0) {
+                address = addresses.get(0);
+              }
+
+            } catch (IOException e) {
+              e.printStackTrace();
             }
-        ).subscribeOn(Schedulers.io());
-    }
+
+            emitter.onNext(address);
+            emitter.onComplete();
+          }
+        }
+    ).subscribeOn(Schedulers.io());
+  }
 }

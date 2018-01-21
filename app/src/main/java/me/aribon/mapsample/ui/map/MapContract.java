@@ -10,13 +10,22 @@ import me.aribon.mapsample.ui.base.BaseMvpView;
 
 public interface MapContract {
 
-    interface View extends BaseMvpView {
+  interface View extends BaseMvpView {
 
-        void moveTo(double lat, double lng, double zoom);
-    }
+    /**
+     *
+     * @param lat
+     * @param lng
+     * @param zoom
+     */
+    void moveTo(double lat, double lng, double zoom);
+  }
 
-    interface Presenter extends BaseMvpPresenter {
+  interface Presenter extends BaseMvpPresenter {
 
-        void centerMap();
-    }
+    /**
+     *
+     */
+    void centerMap();
+  }
 }

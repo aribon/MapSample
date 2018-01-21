@@ -7,6 +7,6 @@ package me.aribon.mapsample.utils.constant;
 
 public class RequestConstant {
 
-    public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 10;
-    public static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 11;
+  public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 10;
+  public static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 11;
 }

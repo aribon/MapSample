@@ -26,179 +26,185 @@ import me.aribon.mapsample.utils.constant.RequestConstant;
 
 public class MapFragment extends BaseFragment implements MapContract.View {
 
-    public static MapFragment newInstance() {
+  public static MapFragment newInstance() {
 
-        Bundle args = new Bundle();
+    Bundle args = new Bundle();
 
-        MapFragment fragment = new MapFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    MapFragment fragment = new MapFragment();
+    fragment.setArguments(args);
+    return fragment;
+  }
 
-    private MapContract.Presenter presenter;
+  private MapContract.Presenter presenter;
 
-    private MapView mapView;
-    private MapboxMap mapboxMap;
+  private MapView mapView;
+  private MapboxMap mapboxMap;
 
-    private FloatingActionButton btnMyLocation;
+  private FloatingActionButton btnMyLocation;
 
-    @Override
-    public int getLayoutResource() {
-        return R.layout.fragment_mapbox;
-    }
+  @Override
+  public int getLayoutResource() {
+    return R.layout.fragment_mapbox;
+  }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
 
-        //Start map initialization
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(MapboxMap mapboxMap) {
-                MapFragment.this.mapboxMap = mapboxMap;
-                if (checkPermissions())
-                    presenter.centerMap();
-            }
-        });
-    }
+    //Start map initialization
+    mapView.onCreate(savedInstanceState);
+    mapView.getMapAsync(new OnMapReadyCallback() {
+      @Override
+      public void onMapReady(MapboxMap mapboxMap) {
+        MapFragment.this.mapboxMap = mapboxMap;
+        if (checkPermissions())
+          presenter.centerMap();
+      }
+    });
+  }
 
-    @Override
-    public void findView(View view) {
-        super.findView(view);
-        mapView = view.findViewById(R.id.mapView);
-        btnMyLocation = view.findViewById(R.id.map_my_location_button);
-    }
+  @Override
+  public void findView(View view) {
+    super.findView(view);
+    mapView = view.findViewById(R.id.mapView);
+    btnMyLocation = view.findViewById(R.id.map_my_location_button);
+  }
 
-    @Override
-    public void initializePresenter() {
-        super.initializePresenter();
-        //Initialization of the presenter
-        presenter = new MapPresenter(this);
-    }
+  @Override
+  public void initializePresenter() {
+    super.initializePresenter();
+    //Initialization of the presenter
+    presenter = new MapPresenter(this);
+  }
 
-    @Override
-    public void initializeView() {
-        super.initializeView();
-        //Initialize fab button click
-        btnMyLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.centerMap();
-            }
-        });
-    }
+  @Override
+  public void initializeData() {
+    super.initializeData();
+    presenter.subscribe();
+  }
 
-    /**
-     * Move map to the determined coordinate
-     *
-     * @param lat latitude
-     * @param lng longitude
-     * @param zoom zoom value
-     */
-    @Override
-    public void moveTo(double lat, double lng, double zoom) {
-        mapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), zoom));
-    }
+  @Override
+  public void initializeView() {
+    super.initializeView();
+    //Initialize fab button click
+    btnMyLocation.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        presenter.centerMap();
+      }
+    });
+  }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mapView.onStart();
-    }
+  /**
+   * Move map to the determined coordinate
+   *
+   * @param lat  latitude
+   * @param lng  longitude
+   * @param zoom zoom value
+   */
+  @Override
+  public void moveTo(double lat, double lng, double zoom) {
+    mapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), zoom));
+  }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
+  @Override
+  public void onStart() {
+    super.onStart();
+    mapView.onStart();
+  }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
+  @Override
+  public void onResume() {
+    super.onResume();
+    mapView.onResume();
+  }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        mapView.onStop();
-    }
+  @Override
+  public void onPause() {
+    super.onPause();
+    mapView.onPause();
+  }
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
+  @Override
+  public void onStop() {
+    super.onStop();
+    mapView.onStop();
+  }
 
-    @Override
-    public void onDestroy() {
-        presenter.unsubscribe();
-        super.onDestroy();
-        mapView.onDestroy();
-    }
+  @Override
+  public void onLowMemory() {
+    super.onLowMemory();
+    mapView.onLowMemory();
+  }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
-    }
+  @Override
+  public void onDestroy() {
+    presenter.unsubscribe();
+    super.onDestroy();
+    mapView.onDestroy();
+  }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[],
-                                           int[] grantResults) {
-        switch (requestCode) {
-            case RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    presenter.centerMap();
-                } else {
-                    showMessage(ResUtils.getString(R.string.error_permission_access_fine_location));
-                }
-                return;
-            }
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    mapView.onSaveInstanceState(outState);
+  }
 
-            case RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    presenter.centerMap();
-                } else {
-                    showMessage(ResUtils.getString(R.string.error_permission_access_coarse_location));
-                }
-                return;
-            }
+  @Override
+  public void onRequestPermissionsResult(int requestCode, String permissions[],
+                                         int[] grantResults) {
+    switch (requestCode) {
+      case RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+        if (grantResults.length > 0
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          presenter.centerMap();
+        } else {
+          showMessage(ResUtils.getString(R.string.error_permission_access_fine_location));
         }
-    }
-    
-    public boolean checkPermissions() {
-        if (ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+        return;
+      }
 
-            if (shouldShowRequestPermissionRationale(
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                showMessage(ResUtils.getString(R.string.error_permission_access_fine_location));
-            } else {
-                requestPermissions(
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            }
-
-            if (shouldShowRequestPermissionRationale(
-                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                showMessage(ResUtils.getString(R.string.error_permission_access_coarse_location));
-            } else {
-                requestPermissions(
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
-            }
-
-            return false;
+      case RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION: {
+        if (grantResults.length > 0
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          presenter.centerMap();
+        } else {
+          showMessage(ResUtils.getString(R.string.error_permission_access_coarse_location));
         }
-
-        return true;
+        return;
+      }
     }
+  }
+
+  public boolean checkPermissions() {
+    if (ContextCompat.checkSelfPermission(getContext(),
+        Manifest.permission.ACCESS_FINE_LOCATION)
+        != PackageManager.PERMISSION_GRANTED
+        && ContextCompat.checkSelfPermission(getContext(),
+        Manifest.permission.ACCESS_COARSE_LOCATION)
+        != PackageManager.PERMISSION_GRANTED) {
+
+      if (shouldShowRequestPermissionRationale(
+          Manifest.permission.ACCESS_FINE_LOCATION)) {
+        showMessage(ResUtils.getString(R.string.error_permission_access_fine_location));
+      } else {
+        requestPermissions(
+            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+            RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+      }
+
+      if (shouldShowRequestPermissionRationale(
+          Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        showMessage(ResUtils.getString(R.string.error_permission_access_coarse_location));
+      } else {
+        requestPermissions(
+            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+            RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+      }
+
+      return false;
+    }
+
+    return true;
+  }
 }

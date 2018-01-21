@@ -13,17 +13,17 @@ import me.aribon.mapsample.utils.ResUtils;
 
 public class AppApplication extends Application {
 
-    private static AppApplication instance;
+  private static AppApplication instance;
 
-    public static AppApplication getInstance() {
-        return instance;
-    }
+  public static AppApplication getInstance() {
+    return instance;
+  }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        instance = this;
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    instance = this;
 
-        Mapbox.getInstance(getApplicationContext(), ResUtils.getString(R.string.mapbox_token));
-    }
+    Mapbox.getInstance(getApplicationContext(), ResUtils.getString(R.string.mapbox_token));
+  }
 }
