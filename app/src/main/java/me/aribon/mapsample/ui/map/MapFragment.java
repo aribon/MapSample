@@ -8,13 +8,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import com.mapbox.mapboxsdk.camera.CameraUpdate;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import me.aribon.mapsample.R;
 import me.aribon.mapsample.ui.base.BaseFragment;
+import me.aribon.mapsample.utils.ResUtils;
 import me.aribon.mapsample.utils.constant.RequestConstant;
 
 /**
@@ -49,7 +51,7 @@ public class MapFragment extends BaseFragment implements MapContract.View {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Start initialization of map
+        //Start map initialization
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -72,13 +74,12 @@ public class MapFragment extends BaseFragment implements MapContract.View {
     public void initializePresenter() {
         super.initializePresenter();
         //Initialization of the presenter
-        presenter = new MapPresenter(getParentActivity(), this);
+        presenter = new MapPresenter(this);
     }
 
     @Override
     public void initializeView() {
         super.initializeView();
-
         //Initialize fab button click
         btnMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,9 +89,16 @@ public class MapFragment extends BaseFragment implements MapContract.View {
         });
     }
 
+    /**
+     * Move map to the determined coordinate
+     *
+     * @param lat latitude
+     * @param lng longitude
+     * @param zoom zoom value
+     */
     @Override
-    public void moveTo(CameraUpdate cameraUpdate) {
-        mapboxMap.animateCamera(cameraUpdate);
+    public void moveTo(double lat, double lng, double zoom) {
+        mapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), zoom));
     }
 
     @Override

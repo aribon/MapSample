@@ -11,9 +11,8 @@ import java.io.IOException;
  * @Author: aribon
  * @Date: 15/01/2018
  */
-public class FileUtils {
 
-    public static final String TAG = FileUtils.class.getSimpleName();
+public class FileUtils {
 
     /**
      * Writes a file to Disk.

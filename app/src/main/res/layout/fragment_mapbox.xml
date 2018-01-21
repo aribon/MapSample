@@ -26,7 +26,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/mapbox_marker_icon_default"
-            android:tint="@color/colorAccent"/>
+            android:tint="@color/colorAccent" />
 
     </LinearLayout>
 

@@ -1,7 +1,5 @@
 package me.aribon.mapsample.ui.map;
 
-import com.mapbox.mapboxsdk.camera.CameraUpdate;
-
 import me.aribon.mapsample.ui.base.BaseMvpPresenter;
 import me.aribon.mapsample.ui.base.BaseMvpView;
 
@@ -14,7 +12,7 @@ public interface MapContract {
 
     interface View extends BaseMvpView {
 
-        void moveTo(CameraUpdate cameraUpdate);
+        void moveTo(double lat, double lng, double zoom);
     }
 
     interface Presenter extends BaseMvpPresenter {

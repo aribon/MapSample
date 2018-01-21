@@ -3,11 +3,8 @@ package me.aribon.mapsample.ui.map;
 import android.location.Location;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import me.aribon.mapsample.backend.LocationManager;
-import me.aribon.mapsample.ui.base.BaseActivity;
 import me.aribon.mapsample.ui.base.BasePresenter;
 import me.aribon.mapsample.utils.constant.MapConstant;
 
@@ -18,10 +15,9 @@ import me.aribon.mapsample.utils.constant.MapConstant;
 
 public class MapPresenter extends BasePresenter implements MapContract.Presenter {
 
-    private BaseActivity activity;
     private MapContract.View mvpView;
 
-    public MapPresenter(BaseActivity activity, MapContract.View mvpView) {
+    public MapPresenter(MapContract.View mvpView) {
         this.mvpView = mvpView;
     }
 
@@ -36,12 +32,21 @@ public class MapPresenter extends BasePresenter implements MapContract.Presenter
         mvpView = null;
     }
 
+    /**
+     * Search current location of the user
+     * Then center the map with the position found
+     */
     @Override
     public void centerMap() {
         fetchCurrentPosition();
     }
 
+    /**
+     * Fetch the current position
+     * Based on the last position given by the device
+     */
     private void fetchCurrentPosition() {
+        //
         new LocationManager()
                 .init()
                 .fetchCurrentPosition(
@@ -54,13 +59,22 @@ public class MapPresenter extends BasePresenter implements MapContract.Presenter
                 );
     }
 
+    /**
+     * Order view to move map to given location
+     *
+     * @param location the position where to center the map
+     */
     private void moveMapTo(Location location) {
-        if(location != null) {
-            mvpView.moveTo(CameraUpdateFactory
-                    .newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), MapConstant.DEFAULT_ZOOM));
+        if (location != null) {
+            mvpView.moveTo(
+                    location.getLatitude(),
+                    location.getLongitude(),
+                    MapConstant.DEFAULT_ZOOM);
         } else {
-            mvpView.moveTo(CameraUpdateFactory
-                    .newLatLngZoom(new LatLng(MapConstant.NOTRE_DAME_PARIS_LAT, MapConstant.NOTRE_DAME_PARIS_LON), MapConstant.DEFAULT_ZOOM));
+            mvpView.moveTo(
+                    MapConstant.NOTRE_DAME_PARIS_LAT,
+                    MapConstant.NOTRE_DAME_PARIS_LON,
+                    MapConstant.DEFAULT_ZOOM);
         }
     }
 }
