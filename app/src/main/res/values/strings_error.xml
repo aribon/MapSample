@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="error_permission_access_fine_location">"Veuillez activer la permission ACCESS_FINE_LOCATION"</string>
+    <string name="error_permission_access_coarse_location">"Veuillez activer la permission ACCESS_COARSE_LOCATION"</string>
+
+</resources>

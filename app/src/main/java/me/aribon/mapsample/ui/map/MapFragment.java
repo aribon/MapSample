@@ -145,7 +145,7 @@ public class MapFragment extends BaseFragment implements MapContract.View {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     presenter.centerMap();
                 } else {
-                    showMessage("Veuillez activer la permission ACCESS_FINE_LOCATION");
+                    showMessage(ResUtils.getString(R.string.error_permission_access_fine_location));
                 }
                 return;
             }
@@ -155,7 +155,7 @@ public class MapFragment extends BaseFragment implements MapContract.View {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     presenter.centerMap();
                 } else {
-                    showMessage("Veuillez activer la permission ACCESS_COARSE_LOCATION");
+                    showMessage(ResUtils.getString(R.string.error_permission_access_coarse_location));
                 }
                 return;
             }
@@ -172,7 +172,7 @@ public class MapFragment extends BaseFragment implements MapContract.View {
 
             if (shouldShowRequestPermissionRationale(
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-                showMessage("Veuillez activer la permission ACCESS_FINE_LOCATION");
+                showMessage(ResUtils.getString(R.string.error_permission_access_fine_location));
             } else {
                 requestPermissions(
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -181,7 +181,7 @@ public class MapFragment extends BaseFragment implements MapContract.View {
 
             if (shouldShowRequestPermissionRationale(
                     Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                showMessage("Veuillez activer la permission ACCESS_COARSE_LOCATION");
+                showMessage(ResUtils.getString(R.string.error_permission_access_coarse_location));
             } else {
                 requestPermissions(
                         new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
