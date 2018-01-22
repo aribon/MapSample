@@ -185,6 +185,8 @@ public class MapFragment extends BaseFragment implements MapContract.View {
                 requestPermissions(
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+                return false;
             }
 
             if (shouldShowRequestPermissionRationale(
@@ -194,9 +196,9 @@ public class MapFragment extends BaseFragment implements MapContract.View {
                 requestPermissions(
                         new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                         RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
-            }
 
-            return false;
+                return false;
+            }
         }
 
         return true;
