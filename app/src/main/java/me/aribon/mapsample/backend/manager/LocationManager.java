@@ -1,26 +1,14 @@
-package me.aribon.mapsample.backend;
+package me.aribon.mapsample.backend.manager;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.schedulers.Schedulers;
 import me.aribon.mapsample.AppApplication;
 
 /**
@@ -33,7 +21,7 @@ public class LocationManager {
   private FusedLocationProviderClient mFusedLocationClient;
 
   /**
-   *  Find the current position of the user
+   * Find the current position of the user
    *
    * @param successListener the success callback
    */

@@ -1,4 +1,4 @@
-package me.aribon.mapsample.backend;
+package me.aribon.mapsample.backend.manager;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -35,15 +35,8 @@ public class AddressManager {
     return fetchAddressFromLocation(latLng.latitude, latLng.longitude);
   }
 
-  /**
-   * Search a specific address from his coordinate
-   *
-   * @param latitude the latitude of the address
-   * @param longitude the longitude of the address
-   * @return the address found
-   */
-  @Nullable
-  public Observable<Address> fetchAddressFromLocation(double latitude, double longitude) {
+
+  public Observable<Address> fetchAddressFromLocation(double lat, double lng) {
     return Observable.create(
         new ObservableOnSubscribe<Address>() {
           @Override
@@ -51,10 +44,10 @@ public class AddressManager {
             Address address = null;
 
             Geocoder geocoder = new Geocoder(AppApplication.getInstance().getApplicationContext(),
-                Locale.ENGLISH);
+                Locale.FRANCE);
 
             try {
-              List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+              List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
 
               if (addresses.size() > 0) {
                 address = addresses.get(0);
@@ -74,7 +67,7 @@ public class AddressManager {
   /**
    * Search address list corresponding to query
    *
-   * @param name the address to find
+   * @param name       the address to find
    * @param nbrResults the number of result wanted
    * @return list of address
    */
@@ -125,4 +118,5 @@ public class AddressManager {
     String suffix = ", France";
     return query.toUpperCase().endsWith(suffix) ? query : query + suffix;
   }
+
 }

@@ -13,7 +13,8 @@ import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import me.aribon.mapsample.backend.AddressManager;
+import me.aribon.mapsample.backend.cache.HistoricAddressCache;
+import me.aribon.mapsample.backend.manager.AddressManager;
 import me.aribon.mapsample.business.bus.AddressBus;
 import me.aribon.mapsample.business.bus.LocationBus;
 import me.aribon.mapsample.business.event.AddressEvent;
@@ -66,6 +67,7 @@ public class SearchAddressPresenter extends BasePresenter
               @Override
               public void accept(Address address) throws Exception {
                 mvpView.showAddress(AddressUtils.formatAddress(address));
+                new HistoricAddressCache().put(address);
               }
             }, new Consumer<Throwable>() {
               @Override
@@ -103,18 +105,7 @@ public class SearchAddressPresenter extends BasePresenter
               @Override
               public void accept(List<Address> addresses) throws Exception {
                 if (!addresses.isEmpty()) {
-                  if (addressSuggestionList != null)
-                    addressSuggestionList.clear();
-                  addressSuggestionList = new ArrayList<>();
-
-                  for (Address address : addresses) {
-                    if (address != null) {
-                      AddressSuggestion addressSuggestion = AddressUtils.transposeToAddressSuggestion(address);
-                      if (!addressSuggestion.isEmpty())
-                        addressSuggestionList.add(addressSuggestion);
-                    }
-                  }
-
+                  updateSuggestionsList(addresses);
                   mvpView.showSuggestions(addressSuggestionList);
                 }
 
@@ -132,6 +123,28 @@ public class SearchAddressPresenter extends BasePresenter
   }
 
   @Override
+  public void loadHistoric() {
+    new HistoricAddressCache().getAll()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            new Consumer<List<Address>>() {
+              @Override
+              public void accept(List<Address> addresses) throws Exception {
+                if (!addresses.isEmpty()) {
+                  updateSuggestionsList(addresses, true);
+                  mvpView.showHistoric(addressSuggestionList);
+                }
+              }
+            }, new Consumer<Throwable>() {
+              @Override
+              public void accept(Throwable throwable) throws Exception {
+                throwable.printStackTrace();
+              }
+            }
+        );
+  }
+
+  @Override
   public void selectAddress(String suggestionUuid) {
     mvpView.hideSuggestions();
     Address address = findAddressFromSuggestions(suggestionUuid);
@@ -139,6 +152,7 @@ public class SearchAddressPresenter extends BasePresenter
     if (address != null) {
       mvpView.showAddress(AddressUtils.formatAddress(address));
       sendAddress(address, AddressEvent.AddressEventType.FROM_INPUT);
+      new HistoricAddressCache().put(address);
     }
   }
 
@@ -158,5 +172,24 @@ public class SearchAddressPresenter extends BasePresenter
   private void sendAddress(Address address, AddressEvent.AddressEventType type) {
     AddressBus.getInstance()
         .send(new AddressEvent(address, type));
+  }
+
+  private void updateSuggestionsList(List<Address> addresses) {
+    updateSuggestionsList(addresses, false);
+  }
+
+  private void updateSuggestionsList(List<Address> addresses, boolean isHistoric) {
+    if (addressSuggestionList != null)
+      addressSuggestionList.clear();
+    addressSuggestionList = new ArrayList<>();
+
+    for (Address address : addresses) {
+      if (address != null) {
+        AddressSuggestion addressSuggestion =
+            AddressUtils.transposeToAddressSuggestion(address, isHistoric);
+        if (!addressSuggestion.isEmpty())
+          addressSuggestionList.add(addressSuggestion);
+      }
+    }
   }
 }

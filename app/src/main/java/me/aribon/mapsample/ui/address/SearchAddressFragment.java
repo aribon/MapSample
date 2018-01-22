@@ -1,6 +1,9 @@
 package me.aribon.mapsample.ui.address;
 
+import android.graphics.Color;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -8,12 +11,14 @@ import android.widget.TextView;
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.arlib.floatingsearchview.util.Util;
 
 import java.util.List;
 
 import me.aribon.mapsample.R;
 import me.aribon.mapsample.ui.base.BaseFragment;
 import me.aribon.mapsample.utils.AddressUtils;
+import me.aribon.mapsample.utils.ResUtils;
 import me.aribon.mapsample.utils.suggestion.AddressSuggestion;
 
 /**
@@ -23,6 +28,8 @@ import me.aribon.mapsample.utils.suggestion.AddressSuggestion;
 
 public class SearchAddressFragment extends BaseFragment
     implements SearchAddressContract.View<AddressSuggestion> {
+
+  private static final String TAG = SearchAddressFragment.class.getSimpleName();
 
   private SearchAddressContract.Presenter presenter;
 
@@ -54,6 +61,12 @@ public class SearchAddressFragment extends BaseFragment
   @Override
   public void initializeView() {
     super.initializeView();
+
+    searchAddressBar.setDividerColor(ResUtils.getColor(R.color.divider_color));
+
+    searchAddressBar.setSearchFocused(true);
+    searchAddressBar.clearSearchFocus();
+
     searchAddressBar.setOnQueryChangeListener(
         new FloatingSearchView.OnQueryChangeListener() {
           @Override
@@ -73,6 +86,16 @@ public class SearchAddressFragment extends BaseFragment
           public void onBindSuggestion(View suggestionView, ImageView leftIcon, TextView textView, SearchSuggestion item, int itemPosition) {
             textView.setText(Html.fromHtml(AddressUtils
                 .formatAddressSuggestion((AddressSuggestion) item)));
+
+            if (((AddressSuggestion) item).isHistoric()) {
+              leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                  R.drawable.ic_history_black_24dp, null));
+            } else {
+              leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                  R.drawable.ic_search_black_24dp, null));
+            }
+
+            Util.setIconColor(leftIcon, Color.parseColor("#616161"));
           }
         }
     );
@@ -82,6 +105,7 @@ public class SearchAddressFragment extends BaseFragment
           @Override
           public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
             presenter.selectAddress(((AddressSuggestion) searchSuggestion).getUuid());
+            searchAddressBar.setLeftMenuOpen(false);
           }
 
           @Override
@@ -90,6 +114,22 @@ public class SearchAddressFragment extends BaseFragment
           }
         }
     );
+
+    searchAddressBar.setOnLeftMenuClickListener(
+        new FloatingSearchView.OnLeftMenuClickListener() {
+          @Override
+          public void onMenuOpened() {
+            Log.e(TAG, "OPEN");
+            presenter.loadHistoric();
+          }
+
+          @Override
+          public void onMenuClosed() {
+            Log.e(TAG, "CLOSE");
+            hideSuggestions();
+          }
+        });
+
   }
 
   @Override
@@ -98,8 +138,13 @@ public class SearchAddressFragment extends BaseFragment
   }
 
   @Override
+  public void showHistoric(List<AddressSuggestion> historicAddresses) {
+    searchAddressBar.swapSuggestions(historicAddresses);
+  }
+
+  @Override
   public void showAddress(String address) {
-    searchAddressBar.setSearchBarTitle(address);
+    searchAddressBar.setSearchHint(address);
   }
 
   @Override

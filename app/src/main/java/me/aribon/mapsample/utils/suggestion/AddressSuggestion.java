@@ -23,6 +23,7 @@ public class AddressSuggestion implements SearchSuggestion {
   private String country;
   private double latitude;
   private double longitude;
+  private boolean isHistoric;
 
   public AddressSuggestion() {
     this.uuid = UUID.randomUUID().toString();
@@ -36,6 +37,7 @@ public class AddressSuggestion implements SearchSuggestion {
     country = in.readString();
     latitude = in.readDouble();
     longitude = in.readDouble();
+    isHistoric = in.readByte() != 0;
   }
 
   @Override
@@ -107,6 +109,14 @@ public class AddressSuggestion implements SearchSuggestion {
     this.longitude = longitude;
   }
 
+  public boolean isHistoric() {
+    return isHistoric;
+  }
+
+  public void setHistoric(boolean historic) {
+    isHistoric = historic;
+  }
+
   public static final Creator<AddressSuggestion> CREATOR = new Creator<AddressSuggestion>() {
     @Override
     public AddressSuggestion createFromParcel(Parcel in) {
@@ -133,6 +143,7 @@ public class AddressSuggestion implements SearchSuggestion {
     dest.writeString(country);
     dest.writeDouble(latitude);
     dest.writeDouble(longitude);
+    dest.writeByte((byte) (isHistoric ? 1 : 0));
   }
 
   public boolean isEmpty() {
