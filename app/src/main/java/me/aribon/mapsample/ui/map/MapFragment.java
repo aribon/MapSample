@@ -189,27 +189,29 @@ public class MapFragment extends BaseFragment implements MapContract.View, Mapbo
         && ContextCompat.checkSelfPermission(getContext(),
         Manifest.permission.ACCESS_COARSE_LOCATION)
         != PackageManager.PERMISSION_GRANTED) {
+          
+          if (shouldShowRequestPermissionRationale(
+                  Manifest.permission.ACCESS_FINE_LOCATION)) {
+              showMessage(ResUtils.getString(R.string.error_permission_access_fine_location));
+          } else {
+              requestPermissions(
+                      new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                      RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 
-      if (shouldShowRequestPermissionRationale(
-          Manifest.permission.ACCESS_FINE_LOCATION)) {
-        showMessage(ResUtils.getString(R.string.error_permission_access_fine_location));
-      } else {
-        requestPermissions(
-            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-            RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-      }
+              return false;
+          }
 
-      if (shouldShowRequestPermissionRationale(
-          Manifest.permission.ACCESS_COARSE_LOCATION)) {
-        showMessage(ResUtils.getString(R.string.error_permission_access_coarse_location));
-      } else {
-        requestPermissions(
-            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-            RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
-      }
+          if (shouldShowRequestPermissionRationale(
+                  Manifest.permission.ACCESS_COARSE_LOCATION)) {
+              showMessage(ResUtils.getString(R.string.error_permission_access_coarse_location));
+          } else {
+              requestPermissions(
+                      new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                      RequestConstant.MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
 
-      return false;
-    }
+              return false;
+          }
+        }
 
     return true;
   }
