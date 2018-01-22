@@ -18,7 +18,6 @@ import java.util.List;
 import me.aribon.mapsample.R;
 import me.aribon.mapsample.ui.base.BaseFragment;
 import me.aribon.mapsample.utils.AddressUtils;
-import me.aribon.mapsample.utils.ResUtils;
 import me.aribon.mapsample.utils.suggestion.AddressSuggestion;
 
 /**
@@ -61,11 +60,6 @@ public class SearchAddressFragment extends BaseFragment
   @Override
   public void initializeView() {
     super.initializeView();
-
-    searchAddressBar.setDividerColor(ResUtils.getColor(R.color.divider_color));
-
-    searchAddressBar.setSearchFocused(true);
-    searchAddressBar.clearSearchFocus();
 
     searchAddressBar.setOnQueryChangeListener(
         new FloatingSearchView.OnQueryChangeListener() {
@@ -139,12 +133,15 @@ public class SearchAddressFragment extends BaseFragment
 
   @Override
   public void showHistoric(List<AddressSuggestion> historicAddresses) {
+    searchAddressBar.setSearchFocused(true);
+    searchAddressBar.clearSearchFocus();
+    searchAddressBar.setLeftMenuOpen(true);
     searchAddressBar.swapSuggestions(historicAddresses);
   }
 
   @Override
   public void showAddress(String address) {
-    searchAddressBar.setSearchHint(address);
+    searchAddressBar.setSearchBarTitle(address);
   }
 
   @Override

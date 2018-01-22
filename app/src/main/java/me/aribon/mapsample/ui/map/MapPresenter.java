@@ -81,7 +81,6 @@ public class MapPresenter extends BasePresenter implements MapContract.Presenter
   @Override
   public void mapMoved(double lat, double lng) {
     sendPosition(lat, lng);
-
   }
 
   private void findCurrentPosition() {
