@@ -9,19 +9,19 @@ import android.support.annotation.StringRes;
 
 public interface BaseMvpView {
 
-    void showLoading();
+  void showLoading();
 
-    void hideLoading();
+  void hideLoading();
 
-    void showMessage(String message);
+  void showMessage(String message);
 
-    void showMessage(@StringRes int resId);
+  void showMessage(@StringRes int resId);
 
-    void showToastMessage(String message);
+  void showToastMessage(String message);
 
-    void showToastMessage(@StringRes int resId);
+  void showToastMessage(@StringRes int resId);
 
-    void showKeyboard();
+  void showKeyboard();
 
-    void hideKeyboard();
+  void hideKeyboard();
 }

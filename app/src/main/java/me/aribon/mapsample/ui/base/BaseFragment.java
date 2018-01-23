@@ -22,103 +22,103 @@ import me.aribon.mapsample.utils.ResUtils;
 
 public abstract class BaseFragment extends Fragment {
 
-    BaseActivity activity;
+  private BaseActivity activity;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        activity = (BaseActivity) context;
-    }
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    activity = (BaseActivity) context;
+  }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initializePresenter();
-    }
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    initializePresenter();
+  }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(getLayoutResource(), container, false);
-    }
+  @Nullable
+  @Override
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                           @Nullable Bundle savedInstanceState) {
+    return inflater.inflate(getLayoutResource(), container, false);
+  }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        findView(view);
-        initializeData();
-        initializeView();
-    }
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    findView(view);
+    initializeData();
+    initializeView();
+  }
 
-    @Override
-    public void onDetach() {
-        activity = null;
-        super.onDetach();
-    }
+  @Override
+  public void onDetach() {
+    activity = null;
+    super.onDetach();
+  }
 
-    public BaseActivity getParentActivity() {
-        return activity;
-    }
+  public BaseActivity getParentActivity() {
+    return activity;
+  }
 
-    public abstract int getLayoutResource();
+  public abstract int getLayoutResource();
 
-    public void findView(View view) {
+  public void findView(View view) {
 
-    }
+  }
 
-    public void initializePresenter() {
+  public void initializePresenter() {
 
-    }
+  }
 
-    public void initializeData() {
+  public void initializeData() {
 
-    }
+  }
 
-    public void initializeView() {
+  public void initializeView() {
 
-    }
+  }
 
-    public void showLoading() {
+  public void showLoading() {
 
-    }
+  }
 
-    public void hideLoading() {
+  public void hideLoading() {
 
-    }
+  }
 
-    public void showMessage(String message) {
-        new AlertDialog.Builder(activity)
-                .setMessage(message)
-                .setPositiveButton(
-                        ResUtils.getString(R.string.generic_ok),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                .create()
-                .show();
-    }
+  public void showMessage(String message) {
+    new AlertDialog.Builder(activity)
+        .setMessage(message)
+        .setPositiveButton(
+            ResUtils.getString(R.string.generic_ok),
+            new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+              }
+            })
+        .create()
+        .show();
+  }
 
-    public void showMessage(@StringRes int resId) {
-        showMessage(ResUtils.getString(resId));
-    }
+  public void showMessage(@StringRes int resId) {
+    showMessage(ResUtils.getString(resId));
+  }
 
-    public void showToastMessage(String message) {
-        Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
-    }
+  public void showToastMessage(String message) {
+    Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
+  }
 
-    public void showToastMessage(@StringRes int resId) {
-        showToastMessage(ResUtils.getString(resId));
-    }
+  public void showToastMessage(@StringRes int resId) {
+    showToastMessage(ResUtils.getString(resId));
+  }
 
-    public void showKeyboard() {
+  public void showKeyboard() {
 
-    }
+  }
 
-    public void hideKeyboard() {
+  public void hideKeyboard() {
 
-    }
+  }
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="mapbox_key">"pk.eyJ1IjoiYXJpYm9uIiwiYSI6ImNqY2d1YTdtdjFpbzQyeHJuM2s1MW1nMHAifQ.bYkVXtjcDkTi1Ei8x-WK4A"</string>
+    <string name="mapbox_token">"pk.eyJ1IjoiYXJpYm9uIiwiYSI6ImNqY2d1YTdtdjFpbzQyeHJuM2s1MW1nMHAifQ.bYkVXtjcDkTi1Ei8x-WK4A"</string>
+    <string name="google_api_key">"AIzaSyALcJofcdGoVtpVbxmoIF883BRYxVAnspU"</string>
 </resources>

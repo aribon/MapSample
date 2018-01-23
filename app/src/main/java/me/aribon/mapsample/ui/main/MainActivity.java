@@ -5,9 +5,9 @@ import me.aribon.mapsample.ui.base.BaseActivity;
 
 public class MainActivity extends BaseActivity {
 
-    @Override
-    public int getLayoutResource() {
-        return R.layout.activity_main;
-    }
+  @Override
+  public int getLayoutResource() {
+    return R.layout.activity_main;
+  }
 
 }

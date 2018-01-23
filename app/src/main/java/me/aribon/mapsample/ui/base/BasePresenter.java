@@ -7,11 +7,11 @@ package me.aribon.mapsample.ui.base;
 
 public class BasePresenter implements BaseMvpPresenter {
 
-    public void subscribe() {
+  public void subscribe() {
 
-    }
+  }
 
-    public void unsubscribe() {
+  public void unsubscribe() {
 
-    }
+  }
 }
