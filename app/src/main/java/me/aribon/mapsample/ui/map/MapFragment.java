@@ -54,18 +54,18 @@ public class MapFragment extends BaseFragment implements MapContract.View, Mapbo
     //Start initialization of map
     mapView.onCreate(savedInstanceState);
     mapView.getMapAsync(new OnMapReadyCallback() {
-        @Override
-        public void onMapReady(MapboxMap mapboxMap) {
-            mapboxMap.addOnCameraMoveListener(MapFragment.this);
-            mapboxMap.addOnCameraIdleListener(MapFragment.this);
-            mapboxMap.addOnCameraMoveStartedListener(MapFragment.this);
-            mapboxMap.addOnCameraMoveCancelListener(MapFragment.this);
-            MapFragment.this.mapboxMap = mapboxMap;
+      @Override
+      public void onMapReady(MapboxMap mapboxMap) {
+        mapboxMap.addOnCameraMoveListener(MapFragment.this);
+        mapboxMap.addOnCameraIdleListener(MapFragment.this);
+        mapboxMap.addOnCameraMoveStartedListener(MapFragment.this);
+        mapboxMap.addOnCameraMoveCancelListener(MapFragment.this);
+        MapFragment.this.mapboxMap = mapboxMap;
 
-            presenter.subscribe();
-            if (checkPermissions())
-                presenter.centerMap();
-        }
+        presenter.subscribe();
+        if (checkPermissions())
+          presenter.centerMap();
+      }
     });
   }
 
@@ -223,9 +223,9 @@ public class MapFragment extends BaseFragment implements MapContract.View, Mapbo
 
   @Override
   public void onCameraIdle() {
-      presenter.mapMoved(
-              mapboxMap.getCameraPosition().target.getLatitude(),
-              mapboxMap.getCameraPosition().target.getLongitude());
+    presenter.mapMoved(
+        mapboxMap.getCameraPosition().target.getLatitude(),
+        mapboxMap.getCameraPosition().target.getLongitude());
   }
 
   @Override

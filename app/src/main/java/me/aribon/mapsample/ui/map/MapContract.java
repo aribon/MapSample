@@ -13,7 +13,6 @@ public interface MapContract {
   interface View extends BaseMvpView {
 
     /**
-     *
      * @param lat
      * @param lng
      * @param zoom
@@ -23,8 +22,8 @@ public interface MapContract {
 
   interface Presenter extends BaseMvpPresenter {
 
-      void centerMap();
+    void centerMap();
 
-      void mapMoved(double lat, double lng);
+    void mapMoved(double lat, double lng);
   }
 }

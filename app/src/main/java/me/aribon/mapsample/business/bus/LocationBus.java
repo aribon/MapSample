@@ -14,36 +14,36 @@ import me.aribon.mapsample.business.event.LocationEvent;
 
 public class LocationBus {
 
-    private static volatile LocationBus instance;
+  private static volatile LocationBus instance;
 
-    public static LocationBus getInstance() {
+  public static LocationBus getInstance() {
+    if (instance == null) {
+      synchronized (LocationBus.class) {
         if (instance == null) {
-            synchronized (LocationBus.class) {
-                if (instance == null) {
-                    instance = new LocationBus();
-                }
-            }
+          instance = new LocationBus();
         }
-
-        return instance;
+      }
     }
 
-        private LocationBus() {
-        if (instance != null) {
-            throw new RuntimeException(
-                    "Use getInstance method to get the single instance of this class.");
-        }
-    }
+    return instance;
+  }
 
-    private final Relay<Object> busSubject = PublishRelay.create().toSerialized();
-
-    public Observable<LocationEvent> register() {
-        return busSubject
-                .map(object -> (LocationEvent) object)
-                .subscribeOn(Schedulers.io());
+  private LocationBus() {
+    if (instance != null) {
+      throw new RuntimeException(
+          "Use getInstance method to get the single instance of this class.");
     }
+  }
 
-    public void send(LocationEvent event) {
-        busSubject.accept(event);
-    }
+  private final Relay<Object> busSubject = PublishRelay.create().toSerialized();
+
+  public Observable<LocationEvent> register() {
+    return busSubject
+        .map(object -> (LocationEvent) object)
+        .subscribeOn(Schedulers.io());
+  }
+
+  public void send(LocationEvent event) {
+    busSubject.accept(event);
+  }
 }

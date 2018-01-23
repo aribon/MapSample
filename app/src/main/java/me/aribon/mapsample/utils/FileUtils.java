@@ -3,9 +3,17 @@ package me.aribon.mapsample.utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+
+import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableOnSubscribe;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @Author: aribon
@@ -21,20 +29,30 @@ public class FileUtils {
    *
    * @param file The file to write to Disk.
    */
-  public static void writeToFile(File file, String fileContent) {
-    if (!file.exists()) {
-      try {
-        FileWriter writer = new FileWriter(file);
-        writer.write(fileContent);
-        writer.close();
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
-      } finally {
+  public static Completable writeToFile(File file, String fileContent) {
+    return Completable.create(
+        new CompletableOnSubscribe() {
+          @Override
+          public void subscribe(CompletableEmitter emitter) throws Exception {
+            try {
+              if (!file.exists()) {
+                file.createNewFile();
+              }
 
-      }
-    }
+              FileOutputStream fop = new FileOutputStream(file, false);
+
+              if (fileContent != null)
+                fop.write(fileContent.getBytes());
+              fop.flush();
+              fop.close();
+            } catch (IOException e) {
+              emitter.onError(e);
+            } finally {
+              emitter.onComplete();
+            }
+          }
+        })
+        .subscribeOn(Schedulers.io());
   }
 
   /**
@@ -45,36 +63,34 @@ public class FileUtils {
    * @param file The file to read from.
    * @return A string with the content of the file.
    */
-  public static String readFileContent(File file) {
-    StringBuilder fileContentBuilder = new StringBuilder();
-    if (file.exists()) {
-      String stringLine;
-      try {
-        FileReader fileReader = new FileReader(file);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        while ((stringLine = bufferedReader.readLine()) != null) {
-          fileContentBuilder.append(stringLine + "\n");
-        }
-        bufferedReader.close();
-        fileReader.close();
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+  public static Single<String> readFileContent(File file) {
+    return Single.create(
+        new SingleOnSubscribe<String>() {
+          @Override
+          public void subscribe(SingleEmitter<String> emitter) throws Exception {
+            StringBuilder fileContentBuilder = new StringBuilder();
+            if (file.exists()) {
+              String stringLine;
 
-    return fileContentBuilder.toString();
-  }
+              try {
+                FileReader fileReader = new FileReader(file);
+                BufferedReader bufferedReader = new BufferedReader(fileReader);
+                while ((stringLine = bufferedReader.readLine()) != null) {
+                  fileContentBuilder.append(stringLine + "\n");
+                }
+                bufferedReader.close();
+                fileReader.close();
+              } catch (FileNotFoundException e) {
+                emitter.onError(e);
+              } catch (IOException e) {
+                emitter.onError(e);
+              }
+            }
 
-  /**
-   * Returns a boolean indicating whether this file can be found on the underlying file system.
-   *
-   * @param file The file to check existence.
-   * @return true if this file exists, false otherwise.
-   */
-  public static boolean exists(File file) {
-    return file.exists();
+            emitter.onSuccess(fileContentBuilder.toString());
+          }
+        })
+        .subscribeOn(Schedulers.io());
   }
 
   /**

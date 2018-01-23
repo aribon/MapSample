@@ -16,6 +16,8 @@ public interface SearchAddressContract {
 
     void showSuggestions(List<S> searchSuggestions);
 
+    void showHistoric(List<S> historicAddresses);
+
     void showAddress(String address);
 
     void hideSuggestions();
@@ -28,6 +30,8 @@ public interface SearchAddressContract {
   interface Presenter extends BaseMvpPresenter {
 
     void searchSuggestions(String query);
+
+    void loadHistoric();
 
     void selectAddress(String address);
   }

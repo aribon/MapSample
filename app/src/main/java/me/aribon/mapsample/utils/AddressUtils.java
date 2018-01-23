@@ -38,6 +38,11 @@ public class AddressUtils {
 
   @NonNull
   public static AddressSuggestion transposeToAddressSuggestion(Address address) {
+    return transposeToAddressSuggestion(address, false);
+  }
+
+  @NonNull
+  public static AddressSuggestion transposeToAddressSuggestion(Address address, boolean isHistoric) {
     AddressSuggestion addressSuggestion = new AddressSuggestion();
     addressSuggestion.setNumber(address.getSubThoroughfare());
     addressSuggestion.setStreet(address.getThoroughfare());
@@ -46,6 +51,7 @@ public class AddressUtils {
     addressSuggestion.setCountry(address.getCountryName());
     addressSuggestion.setLatitude(address.getLatitude());
     addressSuggestion.setLongitude(address.getLongitude());
+    addressSuggestion.setHistoric(isHistoric);
     return addressSuggestion;
   }
 
@@ -86,5 +92,20 @@ public class AddressUtils {
         ? "<br />"
         : "")
         + "<font color=\"#616161\"> <small>" + cityLine + "</small> </font>";
+  }
+
+  public static boolean equals(Address address1, Address address2) {
+    return address1 != null
+        && address2 != null
+        && formatAddress(address1).equals(formatAddress(address2));
+  }
+
+  public static boolean isEmpty(Address address) {
+    return address == null ||
+        (address.getSubThoroughfare() == null
+            && address.getThoroughfare() == null
+            && address.getPostalCode() == null
+            && address.getLocality() == null);
+
   }
 }
