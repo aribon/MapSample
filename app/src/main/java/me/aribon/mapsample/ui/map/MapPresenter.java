@@ -8,9 +8,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import me.aribon.mapsample.backend.LocationManager;
+import me.aribon.mapsample.business.bus.LocationBus;
 import me.aribon.mapsample.business.bus.AddressBus;
 import me.aribon.mapsample.business.event.AddressEvent;
+import me.aribon.mapsample.business.event.LocationEvent;
 import me.aribon.mapsample.ui.base.BasePresenter;
+import me.aribon.mapsample.utils.LocationUtils;
 import me.aribon.mapsample.utils.constant.MapConstant;
 
 /**
@@ -74,6 +77,12 @@ public class MapPresenter extends BasePresenter implements MapContract.Presenter
   public void centerMap() {
     findCurrentPosition();
   }
+  
+  @Override
+  public void mapMoved(double lat, double lng) {
+      sendPosition(lat, lng);
+
+  }
 
   private void findCurrentPosition() {
     new LocationManager()
@@ -105,4 +114,11 @@ public class MapPresenter extends BasePresenter implements MapContract.Presenter
           MapConstant.DEFAULT_ZOOM);
     }
   }
+
+    private void sendPosition(double lat, double lng) {
+        LocationBus.getInstance()
+            .send(new LocationEvent(
+                LocationUtils.transposeToLatLng(lat, lng),
+                LocationEvent.LocationEventType.FROM_MAP));
+    }
 }

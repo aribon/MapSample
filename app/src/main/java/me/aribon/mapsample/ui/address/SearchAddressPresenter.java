@@ -6,12 +6,18 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.Nullable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import me.aribon.mapsample.backend.AddressManager;
 import me.aribon.mapsample.business.bus.AddressBus;
+import me.aribon.mapsample.business.bus.LocationBus;
 import me.aribon.mapsample.business.event.AddressEvent;
+import me.aribon.mapsample.business.event.LocationEvent;
 import me.aribon.mapsample.ui.base.BasePresenter;
 import me.aribon.mapsample.utils.AddressUtils;
 import me.aribon.mapsample.utils.suggestion.AddressSuggestion;
@@ -28,10 +34,46 @@ public class SearchAddressPresenter extends BasePresenter
 
   private SearchAddressContract.View<AddressSuggestion> mvpView;
 
+  private Disposable locationBus;
+
   private List<AddressSuggestion> addressSuggestionList;
 
   SearchAddressPresenter(SearchAddressContract.View<AddressSuggestion> mvpView) {
     this.mvpView = mvpView;
+  }
+
+  @Override
+  public void subscribe() {
+    super.subscribe();
+
+    locationBus = LocationBus.getInstance().register()
+        .flatMap(
+            new Function<LocationEvent, ObservableSource<Address>>() {
+              @Override
+              public ObservableSource<Address> apply(LocationEvent locationEvent) throws Exception {
+                if (locationEvent != null && locationEvent.hasContent()) {
+                  return new AddressManager()
+                      .fetchAddressFromLocation(locationEvent.getEventContent());
+                } else {
+                  return Observable.error(new Exception("No location")); //todo custom exception
+                }
+              }
+            }
+        )
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            new Consumer<Address>() {
+              @Override
+              public void accept(Address address) throws Exception {
+                mvpView.showAddress(AddressUtils.formatAddress(address));
+              }
+            }, new Consumer<Throwable>() {
+              @Override
+              public void accept(Throwable throwable) throws Exception {
+                throwable.getMessage();
+              }
+            }
+        );
   }
 
   @Override
@@ -41,6 +83,12 @@ public class SearchAddressPresenter extends BasePresenter
       addressSuggestionList = null;
     }
 
+    if (locationBus != null && !locationBus.isDisposed()) {
+      locationBus.dispose();
+    }
+
+    locationBus = null;
+    mvpView = null;
     super.unsubscribe();
   }
 
@@ -90,7 +138,7 @@ public class SearchAddressPresenter extends BasePresenter
 
     if (address != null) {
       mvpView.showAddress(AddressUtils.formatAddress(address));
-      AddressBus.getInstance().send(new AddressEvent(address, AddressEvent.AddressEventType.FROM_INPUT));
+      sendAddress(address, AddressEvent.AddressEventType.FROM_INPUT);
     }
   }
 
@@ -105,5 +153,10 @@ public class SearchAddressPresenter extends BasePresenter
       }
     }
     return address;
+  }
+
+  private void sendAddress(Address address, AddressEvent.AddressEventType type) {
+    AddressBus.getInstance()
+        .send(new AddressEvent(address, type));
   }
 }

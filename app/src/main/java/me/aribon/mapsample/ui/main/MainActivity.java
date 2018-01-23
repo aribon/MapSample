@@ -9,5 +9,4 @@ public class MainActivity extends BaseActivity {
   public int getLayoutResource() {
     return R.layout.activity_main;
   }
-
 }

@@ -24,7 +24,7 @@ import me.aribon.mapsample.utils.constant.RequestConstant;
  * @Date: 16/01/2018
  */
 
-public class MapFragment extends BaseFragment implements MapContract.View {
+public class MapFragment extends BaseFragment implements MapContract.View, MapboxMap.OnCameraMoveListener, MapboxMap.OnCameraIdleListener, MapboxMap.OnCameraMoveStartedListener, MapboxMap.OnCameraMoveCanceledListener {
 
   public static MapFragment newInstance() {
 
@@ -51,15 +51,21 @@ public class MapFragment extends BaseFragment implements MapContract.View {
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    //Start map initialization
+    //Start initialization of map
     mapView.onCreate(savedInstanceState);
     mapView.getMapAsync(new OnMapReadyCallback() {
-      @Override
-      public void onMapReady(MapboxMap mapboxMap) {
-        MapFragment.this.mapboxMap = mapboxMap;
-        if (checkPermissions())
-          presenter.centerMap();
-      }
+        @Override
+        public void onMapReady(MapboxMap mapboxMap) {
+            mapboxMap.addOnCameraMoveListener(MapFragment.this);
+            mapboxMap.addOnCameraIdleListener(MapFragment.this);
+            mapboxMap.addOnCameraMoveStartedListener(MapFragment.this);
+            mapboxMap.addOnCameraMoveCancelListener(MapFragment.this);
+            MapFragment.this.mapboxMap = mapboxMap;
+
+            presenter.subscribe();
+            if (checkPermissions())
+                presenter.centerMap();
+        }
     });
   }
 
@@ -208,5 +214,27 @@ public class MapFragment extends BaseFragment implements MapContract.View {
         }
 
     return true;
+  }
+
+  @Override
+  public void onCameraMove() {
+
+  }
+
+  @Override
+  public void onCameraIdle() {
+      presenter.mapMoved(
+              mapboxMap.getCameraPosition().target.getLatitude(),
+              mapboxMap.getCameraPosition().target.getLongitude());
+  }
+
+  @Override
+  public void onCameraMoveStarted(int reason) {
+
+  }
+
+  @Override
+  public void onCameraMoveCanceled() {
+
   }
 }

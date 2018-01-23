@@ -2,6 +2,9 @@ package me.aribon.mapsample.backend;
 
 import android.location.Address;
 import android.location.Geocoder;
+import android.support.annotation.Nullable;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +23,53 @@ import me.aribon.mapsample.AppApplication;
  */
 
 public class AddressManager {
+
+  /**
+   * Search a specific address from his coordinate
+   *
+   * @param latLng the coordinate of the address
+   * @return the address found
+   */
+  @Nullable
+  public Observable<Address> fetchAddressFromLocation(LatLng latLng) {
+    return fetchAddressFromLocation(latLng.latitude, latLng.longitude);
+  }
+
+  /**
+   * Search a specific address from his coordinate
+   *
+   * @param latitude the latitude of the address
+   * @param longitude the longitude of the address
+   * @return the address found
+   */
+  @Nullable
+  public Observable<Address> fetchAddressFromLocation(double latitude, double longitude) {
+    return Observable.create(
+        new ObservableOnSubscribe<Address>() {
+          @Override
+          public void subscribe(ObservableEmitter<Address> emitter) throws Exception {
+            Address address = null;
+
+            Geocoder geocoder = new Geocoder(AppApplication.getInstance().getApplicationContext(),
+                Locale.ENGLISH);
+
+            try {
+              List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
+              if (addresses.size() > 0) {
+                address = addresses.get(0);
+              }
+
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+
+            emitter.onNext(address);
+            emitter.onComplete();
+          }
+        }
+    ).subscribeOn(Schedulers.io());
+  }
 
   /**
    * Search address list corresponding to query

@@ -23,9 +23,8 @@ public interface MapContract {
 
   interface Presenter extends BaseMvpPresenter {
 
-    /**
-     *
-     */
-    void centerMap();
+      void centerMap();
+
+      void mapMoved(double lat, double lng);
   }
 }
